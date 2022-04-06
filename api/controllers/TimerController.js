@@ -90,4 +90,27 @@ module.exports = {
 
         }
     },
+    updateTimer: async function (req, res) {
+        try {
+            if (!req.param('id')
+                ||!(parseInt(req.param('hours'))>=0)
+                ||!(parseInt(req.param('minutes'))>=0)
+                ||!(parseInt(req.param('seconds'))>=0)) {
+                return res.json({ message: 'All fields are mandatory' });
+            }
+            let timerfetch = await Timer.findOne({ id: req.param('id') });
+            if (timerfetch) {
+                updateObj = {
+                    hours:parseInt(req.param('hours')),
+                    minutes:parseInt(req.param('minutes')),
+                    seconds:parseInt(req.param('seconds'))
+                }
+                await Timer.update({ id: req.param('id') }, updateObj);
+                return res.json({ success: true, msg: "timer updated succesffuly" });
+            }
+        } catch (error) {
+            console.log("Error   :", error);
+            return res.status(409).json({ message: 'Something went wrong!' });
+        }
+    },
 }

@@ -8,44 +8,56 @@
     <div class="card" style="margin-right: 5px; width: 100%;">
         <div class="card-body row">
             <h3 style="margin-right: 10%;">Timer</h3>
-            <button class="btn-primary btn-radius" id="myBtn">add</button>
         </div>
-        <h4>Timer</h4>
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <div class="table-headings">
+                    <h4>Timer</h4>
+                    <button class="btn-primary btn-radius" id="myBtn">add</button>
+                </div>
+            </div>
+        </div>
         <div class="row" style="width: 100%;">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                <table id="DataTables_admin_userlist" class="table table-hover table-bordered dt-scrollable">
-                    <%if(timer.length > 0){%>
+                <table class="table table-hover table-bordered dt-scrollable">
                     <thead>
-                    <tr>
-                        <th width="20%">Name</th>
-                        <th width="20%">Author</th>
-                        <th width="20%">Task</th>
-                        <th width="20%">Timer</th>
-                        <th width="20%">Start/Stop</th>
-                        <th width="20%">Actions</th>
-                    </tr>
+                        <tr>
+                            <th width="20%">Name</th>
+                            <th width="20%">Author</th>
+                            <th width="20%">Task</th>
+                            <th width="20%">Timer</th>
+                            <th width="20%">Start/Stop</th>
+                            <th width="20%">Actions</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <% timer.forEach(task=> {%> 
-                        <tr>
-                        <td width="20%"><%=task.name%></td>
-                        <td width="20%"><%=task.author%></td>
-                        <td width="20%"><%=task.task%></td>
-                        <td width="20%"><%=task.hours%></td>
-                        <td width="20%">button</td>
-                        <td width="20%"><a class="" href="timer/editbyid?id=<%=task.id%>" role="button">
-                            Edit
-                        </a>  / <a class="" href="timer/delete?id=<%=task.id%>" role="button">
-                            Delete
-                        </a></td>
-                        </tr>
-                        <%})%>
-                    </tbody>
-                    <%}else{%>
-                          <div>
-            <h3 style="text-align: center;">Sorry No Data Available</h3>
-        </div>
+                        <%if(timer.length > 0){%>
+                            <% timer.forEach(task=> {%> 
+                            <tr>
+                                <td width="20%"><%=task.name%></td>
+                                <td width="20%"><%=task.author%></td>
+                                <td width="20%"><%=task.task%></td>
+                                <td width="20%">
+                                    <span><%=task.hours<10?'0'+task.hours:task.hours%></span> :
+                                    <span><%=task.minutes<10?'0'+task.minutes:task.minutes%></span> :
+                                    <span><%=task.seconds<10?'0'+task.seconds:task.seconds%></span>
+                                </td>
+                                <td width="20%">
+                                    <button class="btn-primary btn-radius" data-start="true" data-id="<%= task.id %>" onclick="startTimer(this)">Start</button>
+                                </td>
+                                <td width="20%">
+                                    <a class="" href="timer/editbyid?id=<%=task.id%>" role="button">Edit</a>  / 
+                                    <a class="" href="timer/delete?id=<%=task.id%>" role="button">Delete</a>
+                                </td>
+                            </tr>
+                            <%})%>
+                        <%}else{%>
+                            <tr>
+                                <td colspan="6"><h5 style="text-align: center;margin:0px;">Sorry No Data Available</h5></td>
+                            </tr>
                         <%}%>
+                    </tbody>
+    
                 </table>
             </div>
         </div>
@@ -87,5 +99,74 @@
       if (event.target == modal) {
         modal.style.display = "none";
       }
+    }
+
+    let intervalId,apiInterval=0;
+    function startTimer(startBtn){
+        let pauseElement = document.querySelector("[data-start=false]")
+        if(pauseElement){
+            pauseTimer(pauseElement)
+        }
+        startBtn.innerHTML="Pause";
+        startBtn.classList.remove("btn-primary");
+        startBtn.classList.add("btn-secondary");
+        startBtn.dataset.start=false;
+        startBtn.onclick = function (){pauseTimer(startBtn)};
+        let timer=startBtn.parentNode.parentNode.childNodes[7]
+        let timerId = startBtn.dataset.id
+        startInterval(timer,timerId);
+    }
+    function startInterval(timer,timerId){
+        intervalId = setInterval(function(){
+            let hoursElement=timer.childNodes[1];
+            let minutesElement=timer.childNodes[3];
+            let secondsElement=timer.childNodes[5];
+            let hours=parseInt(hoursElement.innerHTML);
+            let minutes=parseInt(minutesElement.innerHTML);
+            let seconds=parseInt(secondsElement.innerHTML);
+            seconds=seconds+1;
+            if(seconds==60){
+                minutes=minutes+1;
+                seconds=0;
+            }
+            if(minutes==60){
+                hours=hours+1;
+                minutes=0;
+            }
+            hoursElement.innerHTML = `${hours<10?'0'+hours:hours}`
+            minutesElement.innerHTML = `${minutes<10?'0'+minutes:minutes}`
+            secondsElement.innerHTML = `${seconds<10?'0'+seconds:seconds}`
+            apiInterval++;
+            if(apiInterval==10){
+                apicall(timerId,hours,minutes,seconds)
+                apiInterval=0
+            }
+            
+        },1000)
+    }
+    function apicall(id,hours,minutes,seconds){
+        $.post('/timer/update', { id,hours,minutes,seconds },function(res){
+                if(res.success) {
+                }
+        });
+    }
+    
+    function pauseTimer(pauseBtn){
+        clearInterval(intervalId);
+        apiInterval=0;
+        updateTimer(pauseBtn);
+        pauseBtn.innerHTML="Start";
+        pauseBtn.classList.remove("btn-secondary");
+        pauseBtn.classList.add("btn-primary");
+        pauseBtn.dataset.start=true;
+        pauseBtn.onclick = function (){startTimer(pauseBtn)};
+    }
+    function updateTimer(pauseBtn){
+        let timerId = pauseBtn.dataset.id;
+        let timer = pauseBtn.parentNode.parentNode.childNodes[7]
+        let hours=parseInt(timer.childNodes[1].innerHTML);
+        let minutes=parseInt(timer.childNodes[3].innerHTML);
+        let seconds=parseInt(timer.childNodes[5].innerHTML);
+        apicall(timerId,hours,minutes,seconds)
     }
     </script>

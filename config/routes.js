@@ -39,6 +39,7 @@ module.exports.routes = {
   'GET /timer/editbyid' : 'TimerController.editTimer',
   'POST /timer/editbyid' : 'TimerController.editTimer',
   'GET /timer/delete' : 'TimerController.deleteTimer',
+  'POST /timer/update' : 'TimerController.updateTimer',
   /***************************************************************************
   *                                                                          *
   * More custom routes here...                                               *

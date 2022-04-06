@@ -23,10 +23,15 @@
       },
       hours: {
         type: 'integer',
+        defaultsTo:0
       },
-  
       minutes:{
         type: 'integer',
+        defaultsTo:0
+      },
+      seconds:{
+        type: 'integer',
+        defaultsTo:0
       },
     }
   };
