@@ -19,9 +19,19 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  '/': { view: 'pages/homepage' },
+  '/tt': { view: 'pages/homepage' },
+  '/kk': { view: 'Demo/timer' },
+  '/' : 'DemoController.author',
 
-
+  // democontroller
+  'POST /create-author' : 'DemoController.createAuthor',
+  'POST /create-task' : 'DemoController.createTask',
+  'GET /author/editbyid' : 'DemoController.editAuthor',
+  'POST /author/editbyid' : 'DemoController.editAuthor',
+  'GET /task/editbyid' : 'DemoController.editTask',
+  'POST /task/editbyid' : 'DemoController.editTask',
+  'GET /task/delete' : 'DemoController.deleteTask',
+  'GET /author/delete' : 'DemoController.deleteAuthor',
   /***************************************************************************
   *                                                                          *
   * More custom routes here...                                               *

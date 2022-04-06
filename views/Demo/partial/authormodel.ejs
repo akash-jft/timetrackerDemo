@@ -1,0 +1,97 @@
+<div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3 style="margin-left: 10px;" id="authorTitle">Create Author</h3>
+      <form id="author">
+        <div class="row" style="justify-content: flex-start;">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group">
+                    <label class="col-form-label">Name</label>
+                    <input type="text" name="name" class="form-control form-control-lg" placeholder="Please enter name">
+                </div>
+                <div class="form-group" style="margin-top: 5px;">
+                    <label class="col-form-label">Email</label>
+                    <input type="text" name="email" class="form-control form-control-lg" placeholder="Please enter email">
+                </div>
+                <div style="margin-top: 5px;">
+                    <button class="btn btn-sm btn-radius btn-primary" id='btnAuthor'>Submit</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    </div>
+  </div>
+
+  <script>
+      let author =  JSON.parse(`<%-JSON.stringify(authorfetch)%>`)     
+      $(document).ready(function () {
+        let url='/create-author'
+        if(author){
+            editAuthor(author)
+          url="/author/editbyid"
+      }
+        $("#author").validate({
+            rules: {
+                name: {
+                    required: true,
+                },
+                email: {
+                    required: true,
+                },
+            },
+            //For custom messages
+            messages: {
+                name: {
+                    required: "name is required.",
+                },
+                email: {
+                    required: "email is required.",
+                },
+            },
+            errorPlacement: function (error, element) {
+                let placement = $(element).data('error');
+                if (placement) {
+                    $(placement).append(error)
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            invalidHandler: function (form, validator) {
+                console.log(validator.errorMap);
+            },
+            submitHandler: function (form) {
+                const formData = new FormData(form);
+                if(author){formData.append('id',author.id)}
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success: function (res) {
+                        console.log("hjhhj",res)
+                        if (res.success) {
+                            modal.style.display = "none";
+                            window.location.href = '/';
+                            alert('author created succesffuly')
+                        }
+                        else {
+                            modal.style.display = "none";
+                            window.location.href = '/';
+                            alert('Something went wrong', 'Unauthorized!');
+                        }
+                    },
+                });
+            }
+        });
+    });
+    function editAuthor(data) {
+        console.log("NKNKNN",data)
+        modal.style.display = "block";
+        $('[name="email"]').val(data.email)
+        $('[name="name"]').val(data.name)
+        $("#btnAuthor").html('Save');
+        $("#authorTitle").html('Edit Author');      
+}
+  </script>

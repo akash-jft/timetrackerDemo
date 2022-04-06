@@ -1,0 +1,134 @@
+<div class="header">
+    <h2>Demo</h2>
+</div>
+<div class="row">
+    <div class="card" style="margin-right: 5px;">
+        <div class="card-body row borderBottom">
+            <h3 style="margin-right: 10%;">Author</h3>
+            <button class="btn-primary btn-radius" id="myBtn">add</button>
+        </div>
+        <h4>Author</h4>
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <table id="DataTables_admin_userlist" class="table table-hover table-bordered dt-scrollable">
+                                <thead>
+                                <tr>
+                                    <th width="15%">Name</th>
+                                    <th width="10%">Email</th>
+                                    <th width="13%">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <% author.forEach(task=> {%> 
+                                    <tr>
+                                    <td width="15%"><%=task.name%></td>
+                                    <td width="10%"><%=task.email%></td>
+                                    <td width="13%"><a class="" href="author/editbyid?id=<%=task.id%>" role="button">
+                                        Edit
+                                    </a>  / <a class="" href="author/delete?id=<%=task.id%>" role="button">
+                                        Delete
+                                    </a></td>
+                                    </tr>
+                                    <%})%>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+    </div>
+
+
+    <div class="card" style="margin-left: 5px;">
+        <div class="card-body row borderBottom">
+            <h3 style="margin-right: 10%;">Task</h3>
+            <button class="btn-primary btn-radius" id="taskBtn">add</button>
+        </div>
+        <h4>Task</h4>
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <table id="DataTables_admin_userlist" class="table table-hover table-bordered dt-scrollable">
+                    <%if(task.length > 0){%>
+                    <thead>
+                    <tr>
+                        <th width="15%">Name</th>
+                        <th width="10%">Description</th>
+                        <th width="13%">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <% task.forEach(task=> {%> 
+                        <tr>
+                        <td width="15%"><%=task.name%></td>
+                        <td width="10%"><%=task.description%></td>
+                        <td width="13%"><a class="" href="task/editbyid?id=<%=task.id%>" role="button">
+                            Edit
+                        </a>  / <a class="" href="task/delete?id=<%=task.id%>" role="button">
+                            Delete
+                        </a></td>
+                        </tr>
+                        <%})%>
+                    </tbody>
+                    <%}else{%>
+                          <div>
+            <h3 style="text-align: center;">Sorry No Data Available</h3>
+        </div>
+                        <%}%>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <a href="/kk" style="text-decoration: none;"> <button class="btn-primary btn-radius">Timer</button></a>
+    </div>
+
+    <%-partial("./partial/authormodel",{authorfetch})%>
+    <%-partial("./partial/taskmodel",{taskfetch})%>
+
+
+</div>
+
+
+<script>    
+
+ let deletetask =  JSON.parse(`<%-JSON.stringify(deleted)%>`)     
+      $(document).ready(function () {
+          if(deletetask){
+              alert('deleted succesfully');
+              window.location.href = '/';
+          }
+      });
+    // Get the modal
+    var modal = document.getElementById("myModal");
+    var taskModal = document.getElementById("taskModal");
+    // Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
+    var taskBtn = document.getElementById("taskBtn");
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+    var taskSpan = document.getElementsByClassName("taskClose")[0];
+    // When the user clicks the button, open the modal 
+    btn.onclick = function() {
+      modal.style.display = "block";
+    }
+    taskBtn.onclick = function() {
+      taskModal.style.display = "block";
+    }
+    
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+      modal.style.display = "none";
+      window.location.href = '/';
+    }
+    taskSpan.onclick = function() {
+      taskModal.style.display = "none";
+      window.location.href = '/';
+    }
+    
+    // When the user clicks anywhere outside of the modal, close it
+    // window.onclick = function(event) {
+    //   if (event.target == modal || event.target == taskModal) {
+    //     modal.style.display = "none";
+    //     taskModal.style.display = "none";
+    //   }
+    // }
+    </script>
