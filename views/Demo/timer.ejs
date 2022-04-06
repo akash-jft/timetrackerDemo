@@ -5,51 +5,55 @@
     </div>
 </div>
 <div class="row">
-    <div class="card" style="margin-right: 5px;">
+    <div class="card" style="margin-right: 5px; width: 100%;">
         <div class="card-body row">
-            <h3 style="margin-right: 10%;">Author</h3>
+            <h3 style="margin-right: 10%;">Timer</h3>
             <button class="btn-primary btn-radius" id="myBtn">add</button>
         </div>
-    </div>
-
-
-    <div class="card" style="margin-left: 5px;">
-        <div class="card-body row">
-            <h3 style="margin-right: 10%;">Task</h3>
-            <button class="btn-primary btn-radius">add</button>
+        <h4>Timer</h4>
+        <div class="row" style="width: 100%;">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <table id="DataTables_admin_userlist" class="table table-hover table-bordered dt-scrollable">
+                    <%if(timer.length > 0){%>
+                    <thead>
+                    <tr>
+                        <th width="20%">Name</th>
+                        <th width="20%">Author</th>
+                        <th width="20%">Task</th>
+                        <th width="20%">Timer</th>
+                        <th width="20%">Start/Stop</th>
+                        <th width="20%">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <% timer.forEach(task=> {%> 
+                        <tr>
+                        <td width="20%"><%=task.name%></td>
+                        <td width="20%"><%=task.author%></td>
+                        <td width="20%"><%=task.task%></td>
+                        <td width="20%"><%=task.hours%></td>
+                        <td width="20%">button</td>
+                        <td width="20%"><a class="" href="" role="button">
+                            Edit
+                        </a>  / <a class="" href="" role="button">
+                            Delete
+                        </a></td>
+                        </tr>
+                        <%})%>
+                    </tbody>
+                    <%}else{%>
+                          <div>
+            <h3 style="text-align: center;">Sorry No Data Available</h3>
         </div>
-    </div>
-
-    <div>
-        <button class="btn-primary btn-radius">Timer</button>
-    </div>
-    <div id="myModal" class="modal">
-        <!-- Modal content -->
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <h3 style="margin-left: 10px;">Create Author</h3>
-          <form id="author">
-            <div class="row" style="justify-content: flex-start;">
-                <div class="col-lg-4 col-md-5 col-sm-6">
-                    <div class="form-group">
-                        <label class="col-form-label">Name</label>
-                        <input type="text" name="name" class="form-control form-control-lg" placeholder="Please enter name">
-                    </div>
-                    <div class="form-group" style="margin-top: 5px;">
-                        <label class="col-form-label">Email</label>
-                        <input type="text" name="email" class="form-control form-control-lg" placeholder="Please enter email">
-                    </div>
-                    <div style="margin-top: 5px;">
-                        <button class="btn btn-sm btn-radius btn-primary">Submit</button>
-                    </div>
-                </div>
+                        <%}%>
+                </table>
             </div>
-        </form>
         </div>
-      </div>
-   
-
+    </div>
 </div>
+
+<%-partial("./partial/timermodel",{author,task})%>
+
 <script>
     // Get the modal
     var modal = document.getElementById("myModal");

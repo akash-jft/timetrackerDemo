@@ -32,6 +32,10 @@ module.exports.routes = {
   'POST /task/editbyid' : 'DemoController.editTask',
   'GET /task/delete' : 'DemoController.deleteTask',
   'GET /author/delete' : 'DemoController.deleteAuthor',
+
+// timercontroller
+  'GET /timer' : 'TimerController.timer',
+  'POST /create-timer' : 'TimerController.createTimer',
   /***************************************************************************
   *                                                                          *
   * More custom routes here...                                               *

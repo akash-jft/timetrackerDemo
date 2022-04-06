@@ -1,0 +1,103 @@
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3 style="margin-left: 10px;">Create Timer</h3>
+      <form id="timer">
+        <div class="row" style="justify-content: flex-start;">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group">
+                    <label class="col-form-label">Name</label>
+                    <input type="text" name="name" class="form-control form-control-lg" placeholder="Please enter name">
+                </div>
+                <div class="form-group" style="margin-top: 5px;">
+                    <label class="col-form-label">Author Name</label>
+                </div>
+                    <select name="author"title="Please select author" style="width: 102%; height: 25px;">
+                        <% author.forEach(function (author) {  %>
+                            <option value="<%=author.id%>"><%=author.name%></option>
+                        <% }) %>
+                    </select>
+                <div class="form-group" style="margin-top: 5px;">
+                    <label class="col-form-label">Task Name</label>
+                </div>
+                    <select name="task"title="Please select author" style="width: 102%; height: 25px;">
+                        <% task.forEach(function (task) {  %>
+                            <option value="<%=task.id%>"><%=task.name%></option>
+                        <% }) %>
+                    </select>
+               
+               
+                <div style="margin-top: 5px;">
+                    <button class="btn btn-sm btn-radius btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    </div>
+  </div>
+  <script>
+        
+      $(document).ready(function () {
+        $("#timer").validate({
+            rules: {
+                name: {
+                    required: true,
+                },
+                author: {
+                    required: true,
+                },
+                task: {
+                    required: true,
+                },
+            },
+            //For custom messages
+            messages: {
+                name: {
+                    required: "name is required.",
+                },
+                author: {
+                    required: "author is required.",
+                },
+                task: {
+                    required: "task is required",
+                },
+            },
+            errorPlacement: function (error, element) {
+                let placement = $(element).data('error');
+                if (placement) {
+                    $(placement).append(error)
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            invalidHandler: function (form, validator) {
+                console.log(validator.errorMap);
+            },
+            submitHandler: function (form) {
+                const formData = new FormData(form);
+                $.ajax({
+                    url: '/create-timer/',
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success: function (res) {
+                        console.log("hjhhj",res)
+                        if (res.success) {
+                            modal.style.display = "none";
+                            window.location.href = '/timer';
+                            alert('author created succesffuly')
+                        }
+                        else {
+                            modal.style.display = "none";
+                            window.location.href = '/timer';
+                            alert('Something went wrong', 'Unauthorized!');
+                        }
+                    },
+                });
+            }
+        });
+    });
+  </script>
