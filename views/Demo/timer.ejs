@@ -33,9 +33,9 @@
                         <td width="20%"><%=task.task%></td>
                         <td width="20%"><%=task.hours%></td>
                         <td width="20%">button</td>
-                        <td width="20%"><a class="" href="" role="button">
+                        <td width="20%"><a class="" href="timer/editbyid?id=<%=task.id%>" role="button">
                             Edit
-                        </a>  / <a class="" href="" role="button">
+                        </a>  / <a class="" href="timer/delete?id=<%=task.id%>" role="button">
                             Delete
                         </a></td>
                         </tr>
@@ -52,9 +52,16 @@
     </div>
 </div>
 
-<%-partial("./partial/timermodel",{author,task})%>
+<%-partial("./partial/timermodel",{author,task,timerfetch})%>
 
 <script>
+    let deletetask =  JSON.parse(`<%-JSON.stringify(deleted)%>`)     
+      $(document).ready(function () {
+          if(deletetask){
+              alert('deleted succesfully');
+              window.location.href = '/timer';
+          }
+      });
     // Get the modal
     var modal = document.getElementById("myModal");
     
@@ -72,6 +79,7 @@
     // When the user clicks on <span> (x), close the modal
     span.onclick = function() {
       modal.style.display = "none";
+      window.location.href = '/timer';
     }
     
     // When the user clicks anywhere outside of the modal, close it

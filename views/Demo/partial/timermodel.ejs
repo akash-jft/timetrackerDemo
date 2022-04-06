@@ -1,44 +1,69 @@
 <div id="myModal" class="modal">
     <!-- Modal content -->
     <div class="modal-content">
-      <span class="close">&times;</span>
-      <h3 style="margin-left: 10px;">Create Timer</h3>
-      <form id="timer">
-        <div class="row" style="justify-content: flex-start;">
-            <div class="col-lg-6 col-md-6 col-sm-6">
-                <div class="form-group">
-                    <label class="col-form-label">Name</label>
-                    <input type="text" name="name" class="form-control form-control-lg" placeholder="Please enter name">
-                </div>
-                <div class="form-group" style="margin-top: 5px;">
-                    <label class="col-form-label">Author Name</label>
-                </div>
-                    <select name="author"title="Please select author" style="width: 102%; height: 25px;">
-                        <% author.forEach(function (author) {  %>
-                            <option value="<%=author.id%>"><%=author.name%></option>
-                        <% }) %>
+        <span class="close">&times;</span>
+        <h3 style="margin-left: 10px;" id="taskTimer">Create Timer</h3>
+        <form id="timer">
+            <div class="row" style="justify-content: flex-start;">
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="form-group">
+                        <label class="col-form-label">Name</label>
+                        <input type="text" name="name" class="form-control form-control-lg"
+                            placeholder="Please enter name">
+                    </div>
+                    <div class="form-group" style="margin-top: 5px;">
+                        <label class="col-form-label">Author Name</label>
+                    </div>
+                    <select name="author" title="Please select author" style="width: 102%; height: 25px;"
+                        id="authorhide">
+                        <%if(timerfetch){%>
+                            <option value="<%=timerfetch.id%>">
+                                <%=timerfetch.author%>
+                            </option>
+                            <%}else{%>
+                                <% author.forEach(function (author) { %>
+                                    <option value="<%=author.id%>">
+                                        <%=author.name%>
+                                    </option>
+                                    <% }) %>
+                                        <%}%>
                     </select>
-                <div class="form-group" style="margin-top: 5px;">
-                    <label class="col-form-label">Task Name</label>
-                </div>
-                    <select name="task"title="Please select author" style="width: 102%; height: 25px;">
-                        <% task.forEach(function (task) {  %>
-                            <option value="<%=task.id%>"><%=task.name%></option>
-                        <% }) %>
+                    <div class="form-group" style="margin-top: 5px;">
+                        <label class="col-form-label">Task Name</label>
+                    </div>
+                    <select name="task" title="Please select author" style="width: 102%; height: 25px;" id="taskhide">
+                        <%if(timerfetch){%>
+                            <option value="<%=timerfetch.id%>">
+                                <%=timerfetch.task%>
+                            </option>
+                            <%}else{%>
+                                <% task.forEach(function (task) {%>
+                                    <option value="<%=task.id%>">
+                                        <%=task.name%>
+                                    </option>
+                                    <% }) %>
+                                        <%}%>
                     </select>
-               
-               
-                <div style="margin-top: 5px;">
-                    <button class="btn btn-sm btn-radius btn-primary">Submit</button>
+
+
+                    <div style="margin-top: 5px;">
+                        <button class="btn btn-sm btn-radius btn-primary" id="btnTimer">Submit</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
     </div>
-  </div>
-  <script>
-        
-      $(document).ready(function () {
+</div>
+<script>
+    let timer = JSON.parse(`<%-JSON.stringify(timerfetch)%>`)
+    let task = JSON.parse(`<%-JSON.stringify(task)%>`)
+    let author = JSON.parse(`<%-JSON.stringify(author)%>`)
+    $(document).ready(function () {
+        let url = '/create-timer'
+        if (timer) {
+            editTimer(timer)
+            url = "/timer/editbyid"
+        }
         $("#timer").validate({
             rules: {
                 name: {
@@ -76,15 +101,16 @@
             },
             submitHandler: function (form) {
                 const formData = new FormData(form);
+                if (timer) { formData.append('id', timer.id) }
                 $.ajax({
-                    url: '/create-timer/',
+                    url: url,
                     type: "POST",
                     data: formData,
                     contentType: false,
                     cache: false,
                     processData: false,
                     success: function (res) {
-                        console.log("hjhhj",res)
+                        console.log("hjhhj", res)
                         if (res.success) {
                             modal.style.display = "none";
                             window.location.href = '/timer';
@@ -100,4 +126,14 @@
             }
         });
     });
-  </script>
+    function editTimer(data) {
+        modal.style.display = "block";
+        $('[name="name"]').val(data.name)
+        $('#taskhide').val('1')
+        $('#authorhide').val('1')
+        $('[name="author"]').attr("disabled", true);
+        $('[name="task"]').attr("disabled", true);
+        $("#btnTimer").html('Save');
+        $("#taskTimer").html('Edit Timer');
+    }
+</script>
