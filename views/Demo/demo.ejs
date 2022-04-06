@@ -4,49 +4,66 @@
 <div class="row">
     <div class="card" style="margin-right: 5px;">
         <div class="card-body row borderBottom">
-            <h3 style="margin-right: 10%;">Author</h3>
-            <button class="btn-primary btn-radius" id="myBtn">add</button>
+            <h3 style="margin-right: 10%;">Authors</h3>
         </div>
-        <h4>Author</h4>
-                    <div class="row">
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                            <table id="DataTables_admin_userlist" class="table table-hover table-bordered dt-scrollable">
-                                <thead>
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <div class="table-headings">
+                    <h4>Authors</h4>
+                    <button class="btn-primary btn-radius float-right" id="myBtn">add</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <table class="table table-hover table-bordered dt-scrollable">
+                    <thead>
+                        <tr>
+                            <th width="15%">Name</th>
+                            <th width="10%">Email</th>
+                            <th width="13%">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%if(author.length > 0){%>
+                            <% author.forEach(task=> {%> 
                                 <tr>
-                                    <th width="15%">Name</th>
-                                    <th width="10%">Email</th>
-                                    <th width="13%">Actions</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                    <% author.forEach(task=> {%> 
-                                    <tr>
                                     <td width="15%"><%=task.name%></td>
                                     <td width="10%"><%=task.email%></td>
-                                    <td width="13%"><a class="" href="author/editbyid?id=<%=task.id%>" role="button">
-                                        Edit
-                                    </a>  / <a class="" href="author/delete?id=<%=task.id%>" role="button">
-                                        Delete
-                                    </a></td>
-                                    </tr>
-                                    <%})%>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                                    <td width="13%">
+                                        <a class="" href="author/editbyid?id=<%=task.id%>" role="button">Edit</a>  / 
+                                        <a class="" href="author/delete?id=<%=task.id%>" role="button">Delete</a>
+                                    </td>
+                                </tr>
+                            <%})%>
+                        <%}else{%>
+                            <tr>
+                                <td colspan="3"><h4 style="text-align: center;margin:0px;">Sorry No Data Available</h4></td>
+                            </tr>
+                        <%}%>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
 
     <div class="card" style="margin-left: 5px;">
         <div class="card-body row borderBottom">
-            <h3 style="margin-right: 10%;">Task</h3>
-            <button class="btn-primary btn-radius" id="taskBtn">add</button>
+            <h3 style="margin-right: 10%;">Tasks</h3>
         </div>
-        <h4>Task</h4>
         <div class="row">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                <table id="DataTables_admin_userlist" class="table table-hover table-bordered dt-scrollable">
-                    <%if(task.length > 0){%>
+                <div class="table-headings">
+                    <h4>Tasks</h4>
+                    <button class="btn-primary btn-radius float-right" id="taskBtn">add</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <table class="table table-hover table-bordered dt-scrollable">
                     <thead>
                     <tr>
                         <th width="15%">Name</th>
@@ -55,23 +72,23 @@
                     </tr>
                     </thead>
                     <tbody>
-                        <% task.forEach(task=> {%> 
-                        <tr>
-                        <td width="15%"><%=task.name%></td>
-                        <td width="10%"><%=task.description%></td>
-                        <td width="13%"><a class="" href="task/editbyid?id=<%=task.id%>" role="button">
-                            Edit
-                        </a>  / <a class="" href="task/delete?id=<%=task.id%>" role="button">
-                            Delete
-                        </a></td>
-                        </tr>
-                        <%})%>
-                    </tbody>
-                    <%}else{%>
-                          <div>
-            <h3 style="text-align: center;">Sorry No Data Available</h3>
-        </div>
+                        <%if(task.length > 0){%>
+                            <% task.forEach(task=> {%> 
+                                <tr>
+                                    <td width="15%"><%=task.name%></td>
+                                    <td width="10%"><%=task.description%></td>
+                                    <td width="13%">
+                                        <a class="" href="task/editbyid?id=<%=task.id%>" role="button">Edit</a>  / 
+                                        <a class="" href="task/delete?id=<%=task.id%>" role="button">Delete</a>
+                                    </td>
+                                </tr>
+                            <%})%>
+                        <%}else{%>
+                            <tr>
+                                <td colspan="3"><h5 style="text-align: center;margin:0px;">Sorry No Data Available</h5></td>
+                            </tr>
                         <%}%>
+                    </tbody>
                 </table>
             </div>
         </div>
