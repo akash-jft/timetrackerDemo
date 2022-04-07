@@ -22,6 +22,7 @@
                 <table class="table table-hover table-bordered dt-scrollable">
                     <thead>
                         <tr>
+                            <th>id</th>
                             <th width="20%">Name</th>
                             <th width="20%">Author</th>
                             <th width="20%">Task</th>
@@ -34,6 +35,7 @@
                         <%if(timer.length > 0){%>
                             <% timer.forEach(task=> {%> 
                             <tr>
+                                <td><%=task.id%></td>
                                 <td><%=task.name%></td>
                                 <td><%=task.author%></td>
                                 <td><%=task.task%></td>
@@ -46,8 +48,7 @@
                                     <button class="btn-primary btn-radius" data-start="true" data-id="<%= task.id %>" onclick="startTimer(this)">Start</button>
                                 </td>
                                 <td>
-                                    <a class="" href="timer/editbyid?id=<%=task.id%>" role="button"><img src="/images/icons8-edit-30.png"  class="icontable" title="Edit" alt="">
-                                        </a>  
+                                    <a class="" href="timer/editbyid?id=<%=task.id%>" role="button"><img src="/images/icons8-edit-30.png"  class="icontable" title="Edit" alt=""></a>  
                                     <a class="" href="timer/delete?id=<%=task.id%>" role="button"><img src="/images/icons8-delete-30.png"  class="icontable" title="Delete" alt=""></a>
                                 </td>
                             </tr>
@@ -68,12 +69,17 @@
 <%-partial("./partial/timermodel",{author,task,timerfetch})%>
 
 <script>
-    let deletetask =  JSON.parse(`<%-JSON.stringify(deleted)%>`)     
+    let deletetask =  JSON.parse(`<%-JSON.stringify(deleted)%>`)    
+    let table 
       $(document).ready(function () {
           if(deletetask){
               alert('deleted succesfully');
               window.location.href = '/timer';
           }
+          table = $('table').DataTable({"columnDefs": [
+                {"orderable": false,"visible":false,"searchable":false, "targets": 0},
+                {"orderable": false,"searchable":false, "targets": 6}
+            ]})
       });
     // Get the modal
     var modal = document.getElementById("myModal");
@@ -102,29 +108,22 @@
       }
     }
 
-    let intervalId,apiInterval=0;
+    let intervalId,apiInterval=0,hours,minutes,seconds;
     function startTimer(startBtn){
-        let pauseElement = document.querySelector("[data-start=false]")
-        if(pauseElement){
-            pauseTimer(pauseElement)
-        }
-        startBtn.innerHTML="Pause";
-        startBtn.classList.remove("btn-primary");
-        startBtn.classList.add("btn-secondary");
-        startBtn.dataset.start=false;
-        startBtn.onclick = function (){pauseTimer(startBtn)};
-        let timer=startBtn.parentNode.parentNode.childNodes[7]
-        let timerId = startBtn.dataset.id
+        pauseAll();
+        let tr=$(startBtn).parents("tr");
+        let data = table.row(tr).data();
+        data[5]= `<button class="btn-secondary btn-radius" data-start="false" data-id="${data[0]}" onclick="pauseTimer(this)">Pause</button>`;
+        table.row(tr).data(data).draw(false);
+        let timer=tr.children(":eq(3)")
+        let timerId = data[0]
         startInterval(timer,timerId);
     }
     function startInterval(timer,timerId){
         intervalId = setInterval(function(){
-            let hoursElement=timer.childNodes[1];
-            let minutesElement=timer.childNodes[3];
-            let secondsElement=timer.childNodes[5];
-            let hours=parseInt(hoursElement.innerHTML);
-            let minutes=parseInt(minutesElement.innerHTML);
-            let seconds=parseInt(secondsElement.innerHTML);
+            hours=parseInt(timer.children(":eq(0)").text());
+            minutes=parseInt(timer.children(":eq(1)").text());
+            seconds=parseInt(timer.children(":eq(2)").text());
             seconds=seconds+1;
             if(seconds==60){
                 minutes=minutes+1;
@@ -134,9 +133,10 @@
                 hours=hours+1;
                 minutes=0;
             }
-            hoursElement.innerHTML = `${hours<10?'0'+hours:hours}`
-            minutesElement.innerHTML = `${minutes<10?'0'+minutes:minutes}`
-            secondsElement.innerHTML = `${seconds<10?'0'+seconds:seconds}`
+
+            timer.children(":eq(0)").text(`${hours<10?'0'+hours:hours}`)
+            timer.children(":eq(1)").text(`${minutes<10?'0'+minutes:minutes}`)
+            timer.children(":eq(2)").text(`${seconds<10?'0'+seconds:seconds}`)
             apiInterval++;
             if(apiInterval==10){
                 apicall(timerId,hours,minutes,seconds)
@@ -145,7 +145,17 @@
             
         },1000)
     }
-    function apicall(id,hours,minutes,seconds){
+    function apicall(id,hours,minutes,seconds,pause){
+        table.rows().every(function (a,b,c){
+            let data = this.data()
+            if(data[0]==id){
+                if(pause){
+                    data[5]= `<button class="btn-primary btn-radius" data-start="true" data-id="${data[0]}" onclick="startTimer(this)">Start</button>`;
+                }
+                data[4]=`<span>${hours<10?'0'+hours:hours}</span> : <span>${minutes<10?'0'+minutes:minutes}</span> : <span>${seconds<10?'0'+seconds:seconds}</span>`
+                this.data(data).draw(false)
+            }
+        })
         $.post('/timer/update', { id,hours,minutes,seconds },function(res){
                 if(res.success) {
                 }
@@ -156,18 +166,25 @@
         clearInterval(intervalId);
         apiInterval=0;
         updateTimer(pauseBtn);
-        pauseBtn.innerHTML="Start";
-        pauseBtn.classList.remove("btn-secondary");
-        pauseBtn.classList.add("btn-primary");
-        pauseBtn.dataset.start=true;
-        pauseBtn.onclick = function (){startTimer(pauseBtn)};
+        
     }
     function updateTimer(pauseBtn){
-        let timerId = pauseBtn.dataset.id;
-        let timer = pauseBtn.parentNode.parentNode.childNodes[7]
-        let hours=parseInt(timer.childNodes[1].innerHTML);
-        let minutes=parseInt(timer.childNodes[3].innerHTML);
-        let seconds=parseInt(timer.childNodes[5].innerHTML);
-        apicall(timerId,hours,minutes,seconds)
+        let timerId = $(pauseBtn).data('id');
+        let timer = $(pauseBtn).parents('tr').children(":eq(3)")
+        let hours=parseInt(timer.children(":eq(0)").text());
+        let minutes=parseInt(timer.children(":eq(1)").text());
+        let seconds=parseInt(timer.children(":eq(2)").text());
+        apicall(timerId,hours,minutes,seconds,true)
     }
-    </script>
+    function pauseAll(){
+        table.rows().every(function (a,b,c){
+            let data = this.data()
+            if($(data[5]).data("start")==false){
+                clearInterval(intervalId)
+                let timerId = $(data[5]).data('id');
+                apicall(timerId,hours,minutes,seconds,true)
+            }
+        })
+    }
+
+</script>
