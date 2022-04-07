@@ -17,31 +17,25 @@
 
         <div class="row">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                <table class="table table-hover table-bordered dt-scrollable">
+                <table id="tablek" class="table table-hover table-bordered dt-scrollable">
                     <thead>
                         <tr>
-                            <th width="15%">Name</th>
-                            <th width="10%">Email</th>
-                            <th width="13%">Actions</th>
+                            <th width="35%">Name</th>
+                            <th width="35%">Email</th>
+                            <th width="30%">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <%if(author.length > 0){%>
-                            <% author.forEach(task=> {%> 
-                                <tr>
-                                    <td width="15%"><%=task.name%></td>
-                                    <td width="10%"><%=task.email%></td>
-                                    <td width="13%">
-                                        <a class="" href="author/editbyid?id=<%=task.id%>" role="button">Edit</a>  / 
-                                        <a class="" href="author/delete?id=<%=task.id%>" role="button">Delete</a>
-                                    </td>
-                                </tr>
-                            <%})%>
-                        <%}else{%>
+                        <% author.forEach(task=> {%> 
                             <tr>
-                                <td colspan="3"><h4 style="text-align: center;margin:0px;">Sorry No Data Available</h4></td>
+                                <td><%=task.name%></td>
+                                <td><%=task.email%></td>
+                                <td>
+                                    <a class="" href="author/editbyid?id=<%=task.id%>" role="button">Edit</a>  / 
+                                    <a class="" href="author/delete?id=<%=task.id%>" role="button">Delete</a>
+                                </td>
                             </tr>
-                        <%}%>
+                        <%})%>
                     </tbody>
                 </table>
             </div>
@@ -66,28 +60,22 @@
                 <table class="table table-hover table-bordered dt-scrollable">
                     <thead>
                     <tr>
-                        <th width="15%">Name</th>
-                        <th width="10%">Description</th>
-                        <th width="13%">Actions</th>
+                        <th width="35%">Name</th>
+                        <th width="35%">Description</th>
+                        <th width="30%">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
-                        <%if(task.length > 0){%>
-                            <% task.forEach(task=> {%> 
-                                <tr>
-                                    <td width="15%"><%=task.name%></td>
-                                    <td width="10%"><%=task.description%></td>
-                                    <td width="13%">
-                                        <a class="" href="task/editbyid?id=<%=task.id%>" role="button">Edit</a>  / 
-                                        <a class="" href="task/delete?id=<%=task.id%>" role="button">Delete</a>
-                                    </td>
-                                </tr>
-                            <%})%>
-                        <%}else{%>
+                        <% task.forEach(task=> {%> 
                             <tr>
-                                <td colspan="3"><h5 style="text-align: center;margin:0px;">Sorry No Data Available</h5></td>
+                                <td><%=task.name%></td>
+                                <td><%=task.description%></td>
+                                <td>
+                                    <a class="" href="task/editbyid?id=<%=task.id%>" role="button">Edit</a>  / 
+                                    <a class="" href="task/delete?id=<%=task.id%>" role="button">Delete</a>
+                                </td>
                             </tr>
-                        <%}%>
+                        <%})%>
                     </tbody>
                 </table>
             </div>
@@ -107,12 +95,13 @@
 
 <script>    
 
- let deletetask =  JSON.parse(`<%-JSON.stringify(deleted)%>`)     
+ let deletetask =  JSON.parse(`<%-JSON.stringify(deleted)%>`)    
       $(document).ready(function () {
           if(deletetask){
               alert('deleted succesfully');
               window.location.href = '/';
           }
+          $('table').DataTable();
       });
     // Get the modal
     var modal = document.getElementById("myModal");

@@ -22,15 +22,15 @@
         required: true,
       },
       hours: {
-        type: 'integer',
+        type: 'number',
         defaultsTo:0
       },
       minutes:{
-        type: 'integer',
+        type: 'number',
         defaultsTo:0
       },
       seconds:{
-        type: 'integer',
+        type: 'number',
         defaultsTo:0
       },
     }
