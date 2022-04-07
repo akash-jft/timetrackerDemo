@@ -5,6 +5,7 @@
       <form id="task">
         <div class="row" style="justify-content: flex-start;">
             <div class="col-lg-4 col-md-5 col-sm-6">
+                <input type="hidden" name="id">
                 <div class="form-group">
                     <label class="col-form-label">Name</label>
                     <input type="text" name="name" class="form-control form-control-lg" placeholder="Please enter name">
@@ -23,12 +24,6 @@
   </div>
   <script>    
     $(document).ready(function () {
-        let task =  JSON.parse(`<%-JSON.stringify(taskfetch)%>`)
-      let url='/create-task'
-      if(task){
-           editTask(task)
-          url="/task/editbyid"
-      }
       $("#task").validate({
           rules: {
               name: {
@@ -60,9 +55,9 @@
           },
           submitHandler: function (form) {
               const formData = new FormData(form);
-              if(task){formData.append('id',task.id)}
+              const id = formData.get('id');
               $.ajax({
-                  url: url,
+                  url: id?"/task/editbyid":'/create-task',
                   type: "POST",
                   data: formData,
                   contentType: false,
@@ -70,8 +65,23 @@
                   processData: false,
                   success: function (res) {
                       if (res.success) {
+                          if(id){
+                            taskTable.row($(`[data-taskid=${res.task.id}]`).parents('tr')).data( [
+                                res.task.name ,
+                                res.task.description,
+                                ` <img src="/images/icons8-edit-30.png" onclick="editTask('${res.task.id}',this)" data-taskid="${res.task.id}" class="icontable" title="Edit" alt="">
+                                    <img src="/images/icons8-delete-30.png" onclick="deleteTask('${res.task.id}',this)" class="icontable" title="Delete" alt="">`,
+                            ]).draw(false);
+                          }else{
+                            taskTable.row.add( [
+                                res.task.name ,
+                                res.task.description,
+                                ` <img src="/images/icons8-edit-30.png" onclick="editTask('${res.task.id}',this)" data-taskid="${res.task.id}" class="icontable" title="Edit" alt="">
+                                    <img src="/images/icons8-delete-30.png" onclick="deleteTask('${res.task.id}',this)" class="icontable" title="Delete" alt="">`,
+                            ] ).draw( false );
+                            }
                         taskModal.style.display = "none";
-                        window.location.href = '/';
+                        $("#task")[0].reset();
                         alert('task created succesffuly')
                       }
                       else {

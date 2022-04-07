@@ -17,7 +17,7 @@
 
         <div class="row">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                <table id="tablek" class="table table-hover table-bordered dt-scrollable">
+                <table  class="table table-hover table-bordered dt-scrollable" id="author-table">
                     <thead>
                         <tr>
                             <th width="35%">Name</th>
@@ -31,8 +31,10 @@
                                 <td><%=task.name%></td>
                                 <td><%=task.email%></td>
                                 <td>
-                                    <a class="" href="author/editbyid?id=<%=task.id%>" role="button">Edit</a>  / 
-                                    <a class="" href="author/delete?id=<%=task.id%>" role="button">Delete</a>
+                                    <img src="/images/icons8-edit-30.png" onclick="editAuthor('<%=task.id%>',this)" data-authorid="<%=task.id%>" class="icontable" title="Edit" alt="">
+                                    <img src="/images/icons8-delete-30.png" onclick="deleteAuthor('<%=task.id%>',this)" class="icontable" title="Delete" alt="">
+                                    <!-- <a class="" href="author/editbyid?id=<%=task.id%>" role="button">Edit</a>  / 
+                                    <a class="" href="author/delete?id=<%=task.id%>" role="button">Delete</a> -->
                                 </td>
                             </tr>
                         <%})%>
@@ -57,7 +59,7 @@
         </div>
         <div class="row">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                <table class="table table-hover table-bordered dt-scrollable">
+                <table class="table table-hover table-bordered dt-scrollable" id="task-table">
                     <thead>
                     <tr>
                         <th width="35%">Name</th>
@@ -71,8 +73,8 @@
                                 <td><%=task.name%></td>
                                 <td><%=task.description%></td>
                                 <td>
-                                    <a class="" href="task/editbyid?id=<%=task.id%>" role="button">Edit</a>  / 
-                                    <a class="" href="task/delete?id=<%=task.id%>" role="button">Delete</a>
+                                    <img src="/images/icons8-edit-30.png" onclick="editTask('<%=task.id%>',this)" data-taskid="<%=task.id%>" class="icontable" title="Edit" alt="">
+                                    <img src="/images/icons8-delete-30.png" onclick="deleteTask('<%=task.id%>',this)" class="icontable" title="Delete" alt="">
                                 </td>
                             </tr>
                         <%})%>
@@ -95,13 +97,15 @@
 
 <script>    
 
- let deletetask =  JSON.parse(`<%-JSON.stringify(deleted)%>`)    
+ let deletetask =  JSON.parse(`<%-JSON.stringify(deleted)%>`)   
+ let authorTable,taskTable 
       $(document).ready(function () {
           if(deletetask){
               alert('deleted succesfully');
               window.location.href = '/';
           }
-          $('table').DataTable();
+         taskTable = $('#task-table').DataTable();
+         authorTable = $('#author-table').DataTable();
       });
     // Get the modal
     var modal = document.getElementById("myModal");
@@ -123,11 +127,11 @@
     // When the user clicks on <span> (x), close the modal
     span.onclick = function() {
       modal.style.display = "none";
-      window.location.href = '/';
+    //   window.location.href = '/';
     }
     taskSpan.onclick = function() {
       taskModal.style.display = "none";
-      window.location.href = '/';
+    //   window.location.href = '/';
     }
     
     // When the user clicks anywhere outside of the modal, close it
@@ -137,4 +141,47 @@
     //     taskModal.style.display = "none";
     //   }
     // }
+
+    function editTask(id,input){
+            $.get(`task/editbyid?id=${id}`,{},function(res){
+                if(res.success) {
+                    taskModal.style.display = "block";
+                    $('[name="name"]').val(res.task.name)
+                    $('[name="id"]').val(res.task.id)
+                    $('[name="description"]').val(res.task.description)
+                    $("#btnTask").html('Save');
+                    $("#taskTitle").html('Edit Task');  
+                }
+        });
+
+    }
+    function deleteTask(id,input){
+        $.get(`task/delete?id=${id}`,{},function(res){
+                if(res.success) {
+                    taskTable.row($(input).parents('tr')).remove().draw(false);
+                    alert("deleted scuucesfully")
+                }
+        });
+    }
+    function editAuthor(id,input){
+                $.get(`author/editbyid?id=${id}`,{},function(res){
+                if(res.success) {
+                    modal.style.display = "block";
+                    $('[name="email"]').val(res.author.email)
+                    $('[name="name"]').val(res.author.name)
+                    $("#btnAuthor").html('Save');
+                    $('[name="id"]').val(res.author.id)
+                    $("#authorTitle").html('Edit Author');  
+                }
+        });
+
+    }
+    function deleteAuthor(id,input){
+        $.get(`author/delete?id=${id}`,{},function(res){
+                if(res.success) {
+                    authorTable.row($(input).parents('tr')).remove().draw(false);
+                    alert("deleted scuucesfully")
+                }
+        });
+    }
     </script>

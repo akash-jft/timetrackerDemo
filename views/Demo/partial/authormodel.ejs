@@ -5,6 +5,7 @@
       <form id="author">
         <div class="row" style="justify-content: flex-start;">
             <div class="col-lg-6 col-md-6 col-sm-6">
+                <input type="hidden" name="id">
                 <div class="form-group">
                     <label class="col-form-label">Name</label>
                     <input type="text" name="name" class="form-control form-control-lg" placeholder="Please enter name">
@@ -25,11 +26,6 @@
   <script>
       let author =  JSON.parse(`<%-JSON.stringify(authorfetch)%>`)     
       $(document).ready(function () {
-        let url='/create-author'
-        if(author){
-            editAuthor(author)
-          url="/author/editbyid"
-      }
         $("#author").validate({
             rules: {
                 name: {
@@ -61,20 +57,34 @@
             },
             submitHandler: function (form) {
                 const formData = new FormData(form);
-                if(author){formData.append('id',author.id)}
+                const id = formData.get('id');
                 $.ajax({
-                    url: url,
+                    url: id?"/author/editbyid":'/create-author',
                     type: "POST",
                     data: formData,
                     contentType: false,
                     cache: false,
                     processData: false,
                     success: function (res) {
-                        console.log("hjhhj",res)
                         if (res.success) {
-                            modal.style.display = "none";
-                            window.location.href = '/';
-                            alert('author created succesffuly')
+                            if(id){
+                                authorTable.row($(`[data-authorid=${res.author.id}]`).parents('tr')).data( [
+                                res.author.name ,
+                                res.author.email,
+                                ` <img src="/images/icons8-edit-30.png" onclick="editAuthor('${res.author.id}',this)" data-authorid="${res.author.id}" class="icontable" title="Edit" alt="">
+                                    <img src="/images/icons8-delete-30.png" onclick="deleteAuthor('${res.author.id}',this)" class="icontable" title="Delete" alt="">`,
+                            ] ).draw( false );
+                            }else{
+                            authorTable.row.add( [
+                                res.author.name ,
+                                res.author.email,
+                                ` <img src="/images/icons8-edit-30.png" onclick="editAuthor('${res.author.id}',this)" data-authorid="${res.author.id}" class="icontable" title="Edit" alt="">
+                                    <img src="/images/icons8-delete-30.png" onclick="deleteAuthor('${res.author.id}',this)" class="icontable" title="Delete" alt="">`,
+                            ] ).draw( false );
+                            }
+                        modal.style.display = "none";
+                        $("#author")[0].reset();
+                        alert('author created succesffuly')
                         }
                         else {
                             modal.style.display = "none";

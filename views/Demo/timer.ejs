@@ -34,20 +34,21 @@
                         <%if(timer.length > 0){%>
                             <% timer.forEach(task=> {%> 
                             <tr>
-                                <td width="20%"><%=task.name%></td>
-                                <td width="20%"><%=task.author%></td>
-                                <td width="20%"><%=task.task%></td>
-                                <td width="20%">
+                                <td><%=task.name%></td>
+                                <td><%=task.author%></td>
+                                <td><%=task.task%></td>
+                                <td>
                                     <span><%=task.hours<10?'0'+task.hours:task.hours%></span> :
                                     <span><%=task.minutes<10?'0'+task.minutes:task.minutes%></span> :
                                     <span><%=task.seconds<10?'0'+task.seconds:task.seconds%></span>
                                 </td>
-                                <td width="20%">
+                                <td>
                                     <button class="btn-primary btn-radius" data-start="true" data-id="<%= task.id %>" onclick="startTimer(this)">Start</button>
                                 </td>
-                                <td width="20%">
-                                    <a class="" href="timer/editbyid?id=<%=task.id%>" role="button">Edit</a>  / 
-                                    <a class="" href="timer/delete?id=<%=task.id%>" role="button">Delete</a>
+                                <td>
+                                    <a class="" href="timer/editbyid?id=<%=task.id%>" role="button"><img src="/images/icons8-edit-30.png"  class="icontable" title="Edit" alt="">
+                                        </a>  
+                                    <a class="" href="timer/delete?id=<%=task.id%>" role="button"><img src="/images/icons8-delete-30.png"  class="icontable" title="Delete" alt=""></a>
                                 </td>
                             </tr>
                             <%})%>

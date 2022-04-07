@@ -4,6 +4,11 @@ body {
     margin: 0;
   }
   
+  .icontable {
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+  }
   /* Header/Logo Title */
   .header {
     padding:1px;
