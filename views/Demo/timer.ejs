@@ -231,9 +231,6 @@
     function deleteTimer(id, input) {
         $.get(`timer/delete?id=${id}`, {}, function (res) {
             if (res.success) {
-                if(timer.length == 1){
-
-                }
                 table.row($(input).parents('tr')).remove().draw(false);
                 alert("deleted scuucesfully")
             }
