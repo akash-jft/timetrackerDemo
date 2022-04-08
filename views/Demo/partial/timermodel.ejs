@@ -6,6 +6,7 @@
         <form id="timer">
             <div class="row" style="justify-content: flex-start;">
                 <div class="col-lg-6 col-md-6 col-sm-6">
+                    <input type="hidden" name="id">
                     <div class="form-group">
                         <label class="col-form-label">Name</label>
                         <input type="text" name="name" class="form-control form-control-lg"
@@ -16,33 +17,21 @@
                     </div>
                     <select name="author" title="Please select author" style="width: 102%; height: 25px;"
                         id="authorhide">
-                        <%if(timerfetch){%>
-                            <option value="<%=timerfetch.id%>">
-                                <%=timerfetch.author%>
+                        <% author.forEach(function (author) { %>
+                            <option value="<%=author.id%>">
+                                <%=author.name%>
                             </option>
-                            <%}else{%>
-                                <% author.forEach(function (author) { %>
-                                    <option value="<%=author.id%>">
-                                        <%=author.name%>
-                                    </option>
-                                    <% }) %>
-                                        <%}%>
+                            <% }) %>
                     </select>
                     <div class="form-group" style="margin-top: 5px;">
                         <label class="col-form-label">Task Name</label>
                     </div>
                     <select name="task" title="Please select author" style="width: 102%; height: 25px;" id="taskhide">
-                        <%if(timerfetch){%>
-                            <option value="<%=timerfetch.id%>">
-                                <%=timerfetch.task%>
+                        <% task.forEach(function (task) {%>
+                            <option value="<%=task.id%>">
+                                <%=task.name%>
                             </option>
-                            <%}else{%>
-                                <% task.forEach(function (task) {%>
-                                    <option value="<%=task.id%>">
-                                        <%=task.name%>
-                                    </option>
-                                    <% }) %>
-                                        <%}%>
+                            <% }) %>
                     </select>
 
 
@@ -55,15 +44,8 @@
     </div>
 </div>
 <script>
-    let timer = JSON.parse(`<%-JSON.stringify(timerfetch)%>`)
-    let task = JSON.parse(`<%-JSON.stringify(task)%>`)
-    let author = JSON.parse(`<%-JSON.stringify(author)%>`)
+
     $(document).ready(function () {
-        let url = '/create-timer'
-        if (timer) {
-            editTimer(timer)
-            url = "/timer/editbyid"
-        }
         $("#timer").validate({
             rules: {
                 name: {
@@ -102,18 +84,39 @@
             submitHandler: function (form) {
                 const formData = new FormData(form);
                 if (timer) { formData.append('id', timer.id) }
+                const id = formData.get('id');
                 $.ajax({
-                    url: url,
+                    url: id ? "/timer/editbyid" : '/create-timer',
                     type: "POST",
                     data: formData,
                     contentType: false,
                     cache: false,
                     processData: false,
                     success: function (res) {
-                        console.log("hjhhj", res)
                         if (res.success) {
+                            if (id) {
+                                table.rows().every(function (a, b, c) {
+                                    let data = this.data()
+                                    if (data[0] == id) {
+                                        data[1] = res.timer.name
+                                        this.data(data).draw(false)
+                                    }
+                                })
+                            } else {
+                                table.row.add([
+                                    res.timer.id,
+                                    res.timer.name,
+                                    res.timer.author,
+                                    res.timer.task,
+                                    `  <span>${res.timer.hours < 10 ? '0' + res.timer.hours : res.timer.hours}</span> :
+                                    <span>${res.timer.minutes < 10 ? '0' + res.timer.minutes : res.timer.minutes}</span> :
+                                    <span>${res.timer.seconds < 10 ? '0' + res.timer.seconds : res.timer.seconds}</span>`,
+                                    ` <button class="btn-primary btn-radius" data-start="true" data-id="${res.timer.id}" onclick="startTimer(this)">Start</button>`,
+                                    ` <img src="/images/icons8-edit-30.png" onclick="editTimer('${res.timer.id}',this)" data-timerid="${res.timer.id}" class="icontable" title="Edit" alt="">
+                                    <img src="/images/icons8-delete-30.png" onclick="deleteTimer('${res.timer.id}',this)" class="icontable" title="Delete" alt="">`,
+                                ]).draw(false);
+                            }
                             modal.style.display = "none";
-                            window.location.href = '/timer';
                             alert('author created succesffuly')
                         }
                         else {
@@ -126,14 +129,4 @@
             }
         });
     });
-    function editTimer(data) {
-        modal.style.display = "block";
-        $('[name="name"]').val(data.name)
-        $('#taskhide').val('1')
-        $('#authorhide').val('1')
-        $('[name="author"]').attr("disabled", true);
-        $('[name="task"]').attr("disabled", true);
-        $("#btnTimer").html('Save');
-        $("#taskTimer").html('Edit Timer');
-    }
 </script>

@@ -33,9 +33,9 @@ module.exports = {
                     task: task.name,
                     author: author.name,
                 }
-                await Timer.create(createObj);
+              let timer =  await Timer.create(createObj).fetch();
+              return res.json({ success: true, msg: "Timer created succesffuly",timer });
             }
-            return res.json({ success: true, msg: "Timer created succesffuly" });
 
         } catch (error) {
             console.log("Error   :", error);
@@ -46,23 +46,22 @@ module.exports = {
     editTimer: async function (req, res) {
         try {
             if (req.method === 'GET') {
-                let task = await Task.find();
+                let task =await Task.find();
                 let author = await Author.find();
-                let timer = await Timer.find();
-                let timerfetch = await Timer.findOne({ id: req.param('id') });
-                return res.view('Demo/timer', { task, author, timer, timerfetch, deleted: false });
+                let timer = await Timer.findOne({ id: req.param('id') });
+                return res.json({success:true,timer,task,author });
             } else {
                 if (!req.param('name')
                 ) {
                     return res.json({ message: 'All fields are mandatory' });
                 }
-                let timerfetch = await Timer.findOne({ id: req.param('id') });
-                if (timerfetch) {
+                let timer = await Timer.findOne({ id: req.param('id') });
+                if (timer) {
                     updateObj = {
                         name: req.param('name'),
                     }
-                    await Timer.update({ id: req.param('id') }, updateObj);
-                    return res.json({ success: true, msg: "timer edit succesffuly" });
+                timer =  await Timer.updateOne({ id: req.param('id') }, updateObj);
+                return res.json({ success: true, msg: "timer edit succesffuly",timer });
                 }
             }
         } catch (error) {
@@ -77,13 +76,7 @@ module.exports = {
             if (timerfetch) {
                 await Timer.destroyOne({ id: req.param('id') })
             }
-            console.log(
-                'hhuhuhuhu', timerfetch
-            )
-            let task = await Task.find();
-            let author = await Author.find();
-            let timer = await Timer.find();
-            return res.view('Demo/timer', { task, author, timer, timerfetch: false, deleted: true });
+            return res.json({success:true,msg:"deleted "});
         } catch (error) {
             console.log("Error   :", error);
             return res.status(409).json({ message: 'Something went wrong!' });
