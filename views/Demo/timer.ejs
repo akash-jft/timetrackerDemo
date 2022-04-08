@@ -133,9 +133,9 @@
         }
     }
 
-    let intervalId, apiInterval = 0, hours, minutes, seconds;
+    let intervalId={}, apiInterval = {}, hours={}, minutes={}, seconds={};
     function startTimer(startBtn) {
-        pauseAll();
+        // pauseAll();
         let tr = $(startBtn).parents("tr");
         let data = table.row(tr).data();
         data[5] = `<button class="btn-secondary btn-radius" data-start="false" data-id="${data[0]}" onclick="pauseTimer(this)">Pause</button>`;
@@ -145,27 +145,27 @@
         startInterval(timer, timerId);
     }
     function startInterval(timer, timerId) {
-        intervalId = setInterval(function () {
-            hours = parseInt(timer.children(":eq(0)").text());
-            minutes = parseInt(timer.children(":eq(1)").text());
-            seconds = parseInt(timer.children(":eq(2)").text());
-            seconds = seconds + 1;
-            if (seconds == 60) {
-                minutes = minutes + 1;
-                seconds = 0;
+        intervalId[timerId] = setInterval(function () {
+            hours[timerId] = parseInt(timer.children(":eq(0)").text());
+            minutes[timerId] = parseInt(timer.children(":eq(1)").text());
+            seconds[timerId] = parseInt(timer.children(":eq(2)").text());
+            seconds[timerId] = seconds[timerId] + 1;
+            if (seconds[timerId] == 60) {
+                minutes[timerId] = minutes[timerId] + 1;
+                seconds[timerId] = 0;
             }
-            if (minutes == 60) {
-                hours = hours + 1;
-                minutes = 0;
+            if (minutes[timerId] == 60) {
+                hours[timerId] = hours[timerId] + 1;
+                minutes[timerId] = 0;
             }
 
-            timer.children(":eq(0)").text(`${hours < 10 ? '0' + hours : hours}`)
-            timer.children(":eq(1)").text(`${minutes < 10 ? '0' + minutes : minutes}`)
-            timer.children(":eq(2)").text(`${seconds < 10 ? '0' + seconds : seconds}`)
-            apiInterval++;
-            if (apiInterval == 10) {
-                apicall(timerId, hours, minutes, seconds)
-                apiInterval = 0
+            timer.children(":eq(0)").text(`${hours[timerId] < 10 ? '0' + hours[timerId] : hours[timerId]}`)
+            timer.children(":eq(1)").text(`${minutes[timerId] < 10 ? '0' + minutes[timerId] : minutes[timerId]}`)
+            timer.children(":eq(2)").text(`${seconds[timerId] < 10 ? '0' + seconds[timerId] : seconds[timerId]}`)
+            apiInterval[timerId] =apiInterval[timerId]?apiInterval[timerId]+1:1 ;
+            if (apiInterval[timerId] == 11) {
+                apicall(timerId, hours[timerId], minutes[timerId], seconds[timerId])
+                apiInterval[timerId] = 1
             }
 
         }, 1000)
@@ -188,18 +188,15 @@
     }
 
     function pauseTimer(pauseBtn) {
-        clearInterval(intervalId);
-        apiInterval = 0;
+        let timerId = $(pauseBtn).data('id');
+        clearInterval(intervalId[timerId]);
+        apiInterval[timerId] = 1;
         updateTimer(pauseBtn);
 
     }
     function updateTimer(pauseBtn) {
         let timerId = $(pauseBtn).data('id');
-        let timer = $(pauseBtn).parents('tr').children(":eq(3)")
-        let hours = parseInt(timer.children(":eq(0)").text());
-        let minutes = parseInt(timer.children(":eq(1)").text());
-        let seconds = parseInt(timer.children(":eq(2)").text());
-        apicall(timerId, hours, minutes, seconds, true)
+        apicall(timerId, hours[timerId], minutes[timerId], seconds[timerId], true)
     }
     function pauseAll() {
         table.rows().every(function (a, b, c) {
