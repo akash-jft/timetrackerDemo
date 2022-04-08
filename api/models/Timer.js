@@ -13,14 +13,14 @@
         type: 'string',
         required: true,
       },
-      task: {
-        type: 'string',
-        required: true,
-      },
-      author: {
-        type: 'string',
-        required: true,
-      },
+      // task: {
+      //   type: 'string',
+      //   required: true,
+      // },
+      // author: {
+      //   type: 'string',
+      //   required: true,
+      // },
       hours: {
         type: 'number',
         defaultsTo:0
@@ -33,6 +33,12 @@
         type: 'number',
         defaultsTo:0
       },
+      task: {
+        model: 'task'
+      },
+      author: {
+        model: 'author'
+      }
     }
   };
   

@@ -16,6 +16,10 @@
       description: {
         type: 'string',
         required:true
+      },
+      timer: {
+        collection: 'timer',
+        via: 'task'
       }
     }
   };

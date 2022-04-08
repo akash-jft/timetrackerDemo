@@ -66,10 +66,14 @@ module.exports = {
     deleteAuthor : async function(req,res){
         try {
             let authorfetch =await Author.findOne({id:req.param('id')});
+            let timerAssociation =  await Timer.find({author:req.param('id')});
+            if(timerAssociation.length > 0){
+                return res.json({success:false,msg:"Author is associate with timer table"});
+            }
             if(authorfetch){
                  await Author.destroyOne({id: req.param('id')})
             }
-                return res.json({success:true,msg:"deleted "});
+                return res.json({success:true,msg:"Author Deleted successfully! "});
         }catch (error) {
             console.log("Error   :",error);
             return res.status(409).json({message:'Something went wrong!'});
@@ -125,10 +129,14 @@ module.exports = {
     deleteTask : async function(req,res){
         try {
             let taskfetch =await Task.findOne({id:req.param('id')});
+            let timerAssociation =  await Timer.find({task:req.param('id')});
+            if(timerAssociation.length > 0){
+                return res.json({success:false,msg:"Task is associate with timer table"});
+            }
             if(taskfetch){
                  await Task.destroyOne({id: req.param('id')})
             }
-                return res.json({success:true,msg:"deleted "});
+            return res.json({success:true,msg:"Task is deleted Successfully!"});
         }catch (error) {
             console.log("Error   :",error);
             return res.status(409).json({message:'Something went wrong!'});

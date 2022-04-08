@@ -83,7 +83,6 @@
             },
             submitHandler: function (form) {
                 const formData = new FormData(form);
-                if (timer) { formData.append('id', timer.id) }
                 const id = formData.get('id');
                 $.ajax({
                     url: id ? "/timer/editbyid" : '/create-timer',
@@ -93,6 +92,7 @@
                     cache: false,
                     processData: false,
                     success: function (res) {
+                        console.log("KKKKKKKKKK",res)
                         if (res.success) {
                             if (id) {
                                 table.rows().every(function (a, b, c) {

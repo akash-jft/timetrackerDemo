@@ -17,6 +17,10 @@
         type: 'string',
         required:true,
         isEmail: true
+      },
+      timer: {
+        collection: 'timer',
+        via: 'author'
       }
     }
   };
