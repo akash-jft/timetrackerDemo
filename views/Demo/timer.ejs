@@ -1,6 +1,6 @@
 <div class="header">
     <div class="row" style="justify-content: flex-start;">
-        <button class="btn-primary btn-radius" style="margin-left: 10px; height: 40px;"
+        <button class="btn-primary btn-radius additonalabl" style="margin-left: 10px; height: 40px;"
             onclick=" window.location.href = '/'">back</button>
         <h2 style="margin-left: 40px;">Demo</h2>
     </div>
@@ -229,7 +229,7 @@
         $.get(`timer/delete?id=${id}`, {}, function (res) {
             if (res.success) {
                 table.row($(input).parents('tr')).remove().draw(false);
-                alert("deleted scuucesfully")
+                toastr.success('deleted succesesfully!','Timer Deleted!')
             }
         });
     }

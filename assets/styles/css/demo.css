@@ -215,12 +215,17 @@ overflow-x: hidden;
 }
 .header h2 {
 text-align: center;
-width: 92%;
-display: flex;
+width: 100%;
+display: inline-block;
 margin-left: 0px !important;
-align-items: center;
-justify-content: center;
+padding-top: 12px;
+padding-bottom: 20px;
+margin: 0px auto !important;
+}.additonalabl {
+position: absolute;
+top: 2px;
 }
+
 .table-striped tbody tr:nth-of-type(odd) {
 background-color: rgba(230, 230, 242, .5);
 }

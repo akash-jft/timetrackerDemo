@@ -82,12 +82,12 @@
                             }
                         taskModal.style.display = "none";
                         $("#task")[0].reset();
-                        alert('task created succesffuly')
+                        toastr.success(res.msg,'Successfully!')
                       }
                       else {
                         taskModal.style.display = "none";
                         window.location.href = '/';
-                        alert('Something went wrong', 'Unauthorized!');
+                        toastr.error('Something went wrong', 'Unauthorized!');
                       }
                   },
               });

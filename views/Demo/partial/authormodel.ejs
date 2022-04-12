@@ -84,12 +84,12 @@
                             }
                         modal.style.display = "none";
                         $("#author")[0].reset();
-                        alert('author created succesffuly')
+                        toastr.success(res.msg,'Successfully!')
                         }
                         else {
                             modal.style.display = "none";
                             window.location.href = '/';
-                            alert('Something went wrong', 'Unauthorized!');
+                            toastr.error('Something went wrong', 'Unauthorized!');
                         }
                     },
                 });

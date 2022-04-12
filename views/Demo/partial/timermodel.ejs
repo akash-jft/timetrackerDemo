@@ -18,6 +18,7 @@
                     <select name="author" title="Please select author" style="width: 102%; height: 25px;"
                         id="authorhide">
                         <% author.forEach(function (author) { %>
+                            <option value="" disabled selected hidden>Choose Author...</option>
                             <option value="<%=author.id%>">
                                 <%=author.name%>
                             </option>
@@ -28,6 +29,7 @@
                     </div>
                     <select name="task" title="Please select author" style="width: 102%; height: 25px;" id="taskhide">
                         <% task.forEach(function (task) {%>
+                            <option value="" disabled selected hidden>Choose Task...</option>
                             <option value="<%=task.id%>">
                                 <%=task.name%>
                             </option>
@@ -92,7 +94,6 @@
                     cache: false,
                     processData: false,
                     success: function (res) {
-                        console.log("KKKKKKKKKK",res)
                         if (res.success) {
                             if (id) {
                                 table.rows().every(function (a, b, c) {
@@ -117,12 +118,12 @@
                                 ]).draw(false);
                             }
                             modal.style.display = "none";
-                            alert('author created succesffuly')
+                            toastr.success(res.msg,'Successfully!')
                         }
                         else {
                             modal.style.display = "none";
                             window.location.href = '/timer';
-                            alert('Something went wrong', 'Unauthorized!');
+                            toastr.error('Something went wrong', 'Unauthorized!')
                         }
                     },
                 });

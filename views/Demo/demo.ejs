@@ -126,9 +126,19 @@
     // When the user clicks the button, open the modal 
     btn.onclick = function () {
         modal.style.display = "block";
+        $('[name="email"]').val(null)
+        $('[name="name"]').val(null)
+        $("#btnAuthor").html('Submit');
+        $('[name="id"]').val(null)
+        $("#authorTitle").html('Create Author');
     }
     taskBtn.onclick = function () {
         taskModal.style.display = "block";
+        $('[name="name"]').val(null)
+        $('[name="id"]').val(null)
+        $('[name="description"]').val(null)
+        $("#btnTask").html('Submit');
+        $("#taskTitle").html('Create Task');
     }
 
     // When the user clicks on <span> (x), close the modal
@@ -166,10 +176,10 @@
         $.get(`task/delete?id=${id}`, {}, function (res) {
             if (res.success) {
                 taskTable.row($(input).parents('tr')).remove().draw(false);
-                alert("deleted scuucesfully")
+                toastr.success('deleted succesesfully!','Task Deleted!')
             }
             else{
-                alert(res.msg)
+                toastr.info(res.msg,'Task Deleted!')
             }
         });
     }
@@ -190,9 +200,9 @@
         $.get(`author/delete?id=${id}`, {}, function (res) {
             if (res.success) {
                 authorTable.row($(input).parents('tr')).remove().draw(false);
-                alert("deleted scuucesfully")
+                toastr.success('deleted succesesfully!','Author Deleted!')
             }else{
-                alert(res.msg)
+                toastr.info(res.msg, 'Author Deleted!')
             }
         });
     }
